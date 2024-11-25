@@ -1,50 +1,117 @@
-# React + TypeScript + Vite
+# Coffee Delivery
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Coffee Delivery é uma aplicação de entrega de café criada para praticar os conceitos aprendidos em aulas de **React**. O objetivo deste projeto é construir uma aplicação completa, desde a configuração inicial até o desenvolvimento de funcionalidades avançadas, utilizando **React**, **TypeScript**, **Styled Components**, e outras tecnologias.
 
-Currently, two official plugins are available:
+## Tecnologias Utilizadas
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React** (com Hooks)
+- **TypeScript**
+- **Styled Components**
+- **Vite** como bundler
+- **ESLint** para linting e formatação
+- **React Router** para navegação
+- **Context API** e **Reducers** para gerenciamento de estado
+- **LocalStorage** para persistência de dados
 
-## Expanding the ESLint configuration
+## Funcionalidades
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **Home**: Exibe uma lista de cafés disponíveis.
+- **Carrinho**: Adiciona cafés ao carrinho e permite a visualização dos itens.
+- **Checkout**: Finaliza o pedido, mostrando os detalhes e o prazo de entrega.
 
-- Configure the top-level `parserOptions` property like this:
+## Estrutura do Projeto
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+O projeto está estruturado da seguinte forma:
+
+```bash
+src/
+├── App/
+│   ├── components/                # Componentes reutilizáveis em todo o app
+│   │   ├── Content/               # Componente Content
+│   │   │   ├── components/        # Componentes específicos do Content
+│   │   │   ├── contexts/          # Context API do Content
+│   │   │   ├── reducers/          # Reducers do Content
+│   │   │   ├── index.tsx          # Arquivo principal do Content
+│   │   │   ├── styled.ts          # Estilos do Content
+│   │   ├── Header/                # Componente Header
+│   │   │   ├── components/        # Componentes específicos do Header
+│   │   │   ├── context/           # Context API do Header
+│   │   │   ├── reducers/          # Reducers do Header
+│   │   │   ├── index.tsx          # Arquivo principal do Header
+│   │   │   ├── styled.ts          # Estilos do Header
+│   ├── pages/                     # Páginas principais do app
+│   │   ├── Home/                  # Página Home
+│   │   │   ├── components/        # Componentes específicos da Home
+│   │   │   ├── contexts/          # Context API da Home
+│   │   │   ├── reducers/          # Reducers da Home
+│   │   │   ├── index.tsx          # Arquivo principal da Home
+│   │   │   ├── styled.ts          # Estilos da Home
+│   │   ├── Cart/                  # Página do Carrinho
+│   │   │   ├── components/        # Componentes específicos do Carrinho
+│   │   │   ├── contexts/          # Context API do Carrinho
+│   │   │   ├── reducers/          # Reducers do Carrinho
+│   │   │   ├── index.tsx          # Arquivo principal do Carrinho
+│   │   │   ├── styled.ts          # Estilos do Carrinho
+│   │   ├── Checkout/              # Página de Checkout
+│   │   │   ├── components/        # Componentes específicos do Checkout
+│   │   │   ├── contexts/          # Context API do Checkout
+│   │   │   ├── reducers/          # Reducers do Checkout
+│   │   │   ├── index.tsx          # Arquivo principal do Checkout
+│   │   │   ├── styled.ts          # Estilos do Checkout
+│   ├── contexts/                  # Contextos globais (ex: tema, autenticação, etc.)
+│   ├── reducers/                  # Reducers globais
+│   ├── index.tsx                  # Ponto de entrada do App
+│   ├── styled.ts                  # Estilos globais do App
+├── assets/                        # Arquivos estáticos (imagens, fontes, etc.)
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## Como Rodar o Projeto Localmente
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+1. Clone o repositório:
+```bash
+git clone https://github.com/didierpg/coffee-delivery.git
 ```
+
+2. Navegue até a pasta do projeto:
+
+```bash
+cd coffee-delivery
+```
+3. Instale as dependências:
+
+```bash
+npm install
+```
+
+4. Inicie o servidor de desenvolvimento:
+
+```bash
+npm run dev
+```
+
+5. Acesse o projeto no navegador:
+
+A aplicação estará disponível em http://localhost:3000.
+
+## Desenvolvimento
+- [Commits](https://github.com/didierpg/coffee-delivery/commits/main/)
+- [Milestone 1: Configuração Inicial](https://github.com/didierpg/coffee-delivery/milestone/1)
+
+## Licença
+Este projeto está licenciado sob a MIT License - veja o arquivo LICENSE para mais detalhes.
+
+---
+
+Autor: Didier Braz Ferreira
+
+GitHub: didierpg
+
+
+### Explicação das Seções:
+1. **Descrição do projeto**: Um breve resumo do que é a aplicação e qual seu propósito (praticar React).
+2. **Tecnologias Utilizadas**: Lista das tecnologias que você está utilizando no projeto, o que pode ser útil para qualquer desenvolvedor que queira colaborar ou entender o projeto.
+3. **Funcionalidades**: Descrição das funcionalidades principais do projeto, para que qualquer pessoa entenda o que a aplicação faz.
+4. **Estrutura do Projeto**: Explica a estrutura de diretórios para que quem for visualizar o código tenha uma ideia de onde está o que.
+5. **Como Rodar o Projeto Localmente**: Passo a passo para rodar a aplicação em uma máquina local, desde o clone até a execução.
+6. **Desenvolvimento**: Links para acompanhar o progresso do projeto, com links para as milestones e commits.
+7. **Licença**: Para deixar claro qual é a licença de uso do projeto.
