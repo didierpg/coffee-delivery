@@ -16,7 +16,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    margin: 0 10rem;
+    margin: 0 10%;
     font-family: ${({ theme }) => theme.font.roboto}, sans-serif;
     font-size: 1.6rem; /* 16px */
     line-height: 1.5;
@@ -44,17 +44,11 @@ export const GlobalStyle = createGlobalStyle`
 
   /* Botões */
   button {
+    line-height: 0;
     border: none;
     cursor: pointer;
     font-family: ${({ theme }) => theme.font.roboto}, sans-serif;
-    font-size: inherit;
-    background: none;
     transition: background-color 0.2s ease, color 0.2s ease;
-  }
-
-  button:hover {
-    background-color: ${({ theme }) => theme.color.baseHover};
-    color: ${({ theme }) => theme.color.baseTitle};
   }
 
   /* Inputs e formulários */
@@ -67,6 +61,7 @@ export const GlobalStyle = createGlobalStyle`
     color: ${({ theme }) => theme.color.baseText};
     padding: 0.8rem;
     border-radius: 4px;
+    width: 100%;
   }
 
   input::placeholder, textarea::placeholder {
@@ -122,4 +117,13 @@ export const GlobalStyle = createGlobalStyle`
   p {
     margin-bottom: 1.6rem;
   }
+
+  hr {
+    border-color: ${({ theme }) => theme.color.baseCard};
+    border-width: 1px;
+    margin: 2.4rem auto;
+    opacity: .2;
+
+  }
+
 `;
