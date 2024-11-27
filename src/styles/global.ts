@@ -16,6 +16,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   body {
+    margin: 0 10rem;
     font-family: ${({ theme }) => theme.font.roboto}, sans-serif;
     font-size: 1.6rem; /* 16px */
     line-height: 1.5;
