@@ -65,55 +65,18 @@ export const StyledCoffeeCard = styled.div`
       }
     }
 
-    div {
-      display: flex;
-      flex-direction: space-between;
-      border-radius: 0.6rem;
-      background-color: ${({ theme }) => theme.color.baseButton};
-
-      * {
-        outline: none;
-      }
-
-      button {
-        font-size: 1rem;
-        color: ${({ theme }) => theme.color.purple};
-        background-color: transparent;
-
-        svg {
-          font-size: 1.6rem;
-        }
-      }
-
-      button:hover,
-      button:focus {
-        background-color: transparent;
-        color: ${({ theme }) => theme.color.darkPurple};
-      }
-
-      input {
-        padding: 0;
-        width: 100%;
-        background-color: transparent;
-        text-align: center;
-
-        &::-webkit-inner-spin-button {
-          -webkit-appearance: none;
-          appearance: none;
-          margin: 0;
-        }
-      }
-    }
-
-    button {
+    button[type="button"] {
       padding: 0.8rem;
       color: ${({ theme }) => theme.color.baseCard};
       background-color: ${({ theme }) => theme.color.darkPurple};
       border-radius: 0.6rem;
-      box-sizing: border-box;
 
       svg {
         font-size: 1.8rem;
+      }
+
+      &:hover {
+        background-color: ${({ theme }) => theme.color.purple};
       }
     }
   }

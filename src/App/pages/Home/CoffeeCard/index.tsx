@@ -27,7 +27,7 @@ export function CoffeeCard() {
         <h2>
           <small>R$ </small>9,90
         </h2>
-        <div>
+        <div className="input-number">
           <button>
             <Plus />
           </button>
