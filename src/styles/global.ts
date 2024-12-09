@@ -52,16 +52,24 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   /* Inputs e formulários */
-  input, textarea {
+  input, select, textarea {
     font-family: ${({ theme }) => theme.font.roboto}, sans-serif;
     font-size: inherit;
-    border: none;
     outline: none;
     background-color: ${({ theme }) => theme.color.baseInput};
     color: ${({ theme }) => theme.color.baseText};
     padding: 0.8rem;
-    border-radius: 4px;
     width: 100%;
+    font-size: 1.4rem;
+
+    border-radius: 0.4rem;
+    border-style: solid;
+    border-width: 0.3rem;
+    border-color: transparent;
+
+    &:focus {
+      border-color: ${({ theme }) => theme.color.darkYellow};
+    }
   }
 
   input::placeholder, textarea::placeholder {

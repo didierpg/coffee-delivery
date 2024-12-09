@@ -1,6 +1,7 @@
 export const defaultTheme = {
   color: {
     white: "#FFFFFF",
+    danger: "tomato",
 
     yellow: "#DBAC2C",
     purple: "#8047F8",

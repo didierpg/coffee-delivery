@@ -1,33 +1,33 @@
-import 'styled-components';
+import "styled-components";
 
-declare module 'styled-components' {
-  export interface DefaultTheme  {
+declare module "styled-components" {
+  export interface DefaultTheme {
     color: {
-        white: string;
-        yellow: string;
-        purple: string;
+      white: string;
+      danger: string;
+      yellow: string;
+      purple: string;
 
-        lightYellow: string;
-        lightPurple: string;
+      lightYellow: string;
+      lightPurple: string;
 
-        darkYellow:  string;
-        darkPurple: string;
+      darkYellow: string;
+      darkPurple: string;
 
-        background: string;
+      background: string;
 
-        baseTitle: string;
-        baseSubtitle: string;
-        baseText: string;
-        baseLabel: string;
-        baseHover: string;
-        baseButton: string;
-        baseInput: string;
-        baseCard: string;
-    },
+      baseTitle: string;
+      baseSubtitle: string;
+      baseText: string;
+      baseLabel: string;
+      baseHover: string;
+      baseButton: string;
+      baseInput: string;
+      baseCard: string;
+    };
     font: {
-        baloo: string;
-        roboto: string;
-    }
-
-}
+      baloo: string;
+      roboto: string;
+    };
+  }
 }
