@@ -3,17 +3,18 @@ import { Header } from "./components/Header";
 import { Home } from "./pages/Home";
 import { Checkout } from "./pages/Checkout";
 import { Success } from "./pages/Success";
+import { OrderProvider } from "./context/Order/OrderProvider";
 
 export function App() {
   return (
-    <>
-      <Header/>
+    <OrderProvider>
+      <Header />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/success" element={<Success />} />
       </Routes>
-      <Outlet/>
-    </>
-  )
+      <Outlet />
+    </OrderProvider>
+  );
 }

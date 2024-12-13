@@ -1,11 +1,18 @@
 import { Trash } from "phosphor-react";
 import { StyledCoffeeItem } from "./styled";
-import { ICoffee } from "../../Home/CoffeeCard";
 import { InputNumber } from "../../../components/InputNumber";
+import { ICartItem } from "../../../context/Order/types";
 import { useState } from "react";
 
-export function CoffeeItem({ id, name, imageUrl, price }: ICoffee) {
-  const [amount, setAmount] = useState(1);
+export function CartItem({
+  coffee: { id, name, imageUrl, price },
+  amount: currentAmount,
+}: ICartItem) {
+  const [amount, setAmount] = useState(currentAmount);
+  const total = new Intl.NumberFormat("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(price * amount);
 
   return (
     <StyledCoffeeItem id={id}>
@@ -23,10 +30,7 @@ export function CoffeeItem({ id, name, imageUrl, price }: ICoffee) {
         </span>
         <b>
           <b>R$ </b>
-          {new Intl.NumberFormat("pt-BR", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          }).format(price * amount)}
+          {total}
         </b>
       </span>
       <hr />

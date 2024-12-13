@@ -7,36 +7,18 @@ import {
 } from "phosphor-react";
 import { StyledCheckout } from "./styled";
 import { useTheme } from "styled-components";
-import { CoffeeItem } from "./CoffeeItem";
+import { CartItem } from "./CartItem";
 import { Link } from "react-router-dom";
-import { ICoffee } from "../Home/CoffeeCard";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useOrder } from "../../context/Order";
+import { ICartItem } from "../../context/Order/types";
 
 export function Checkout() {
   const theme = useTheme();
 
-  const coffees: ICoffee[] = [
-    {
-      id: "americano",
-      name: "Expresso Americano",
-      imageUrl: "src/assets/coffees/americano.svg",
-      price: 9.9,
-    },
-    {
-      id: "arabe",
-      name: "Árabe",
-      imageUrl: "src/assets/coffees/arabe.svg",
-      price: 9.9,
-    },
-    {
-      id: "capuccino",
-      name: "Capuccino",
-      imageUrl: "src/assets/coffees/capuccino.svg",
-      price: 9.9,
-    },
-  ];
+  const { cart, totals } = useOrder();
 
   const addressSchema = z.object({
     zip: z
@@ -225,21 +207,21 @@ export function Checkout() {
       <section>
         <h3>Cafés selecionados</h3>
         <div className="confirm">
-          {coffees.map((coffee) => (
-            <CoffeeItem key={coffee.id} {...coffee} />
+          {cart?.map((item: ICartItem) => (
+            <CartItem key={item.coffee.id} {...item} />
           ))}
           <div className="total">
             <span>
               <small>Total de itens</small>
-              R$ 99,99
+              R$ {totals?.subtotal}
             </span>
             <span>
               <small>Entrega</small>
-              R$ 99,99
+              R$ {totals?.shipping}
             </span>
             <span>
               <b>Total</b>
-              <b>R$ 999,99</b>
+              <b>R$ {totals?.total}</b>
             </span>
             <Link to="/success">CONFIRMAR PEDIDO</Link>
           </div>
