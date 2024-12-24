@@ -14,21 +14,20 @@ export const StyledInputNumber = styled.div`
     outline: none;
   }
 
-  button {
+  button[type="button"] {
     padding: 0.9rem 0.8rem;
     font-size: 1rem;
     color: ${({ theme }) => theme.color.purple};
     background-color: transparent;
 
+    &:hover,
+    &:focus {
+      color: ${({ theme }) => theme.color.darkPurple};
+    }
+
     svg {
       font-size: 1.6rem;
     }
-  }
-
-  button:hover,
-  button:focus {
-    background-color: transparent;
-    color: ${({ theme }) => theme.color.darkPurple};
   }
 
   input[type="number"] {

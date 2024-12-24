@@ -74,18 +74,23 @@ export const StyledCoffeeCard = styled.div`
       }
     }
 
-    button[type="button"] {
-      padding: 0.8rem;
-      color: ${({ theme }) => theme.color.baseCard};
-      background-color: ${({ theme }) => theme.color.darkPurple};
-      border-radius: 0.6rem;
+    form {
+      display: inherit;
+      gap: inherit;
 
-      svg {
-        font-size: 1.8rem;
-      }
+      button[type="submit"] {
+        padding: 0.8rem;
+        color: ${({ theme }) => theme.color.baseCard};
+        background-color: ${({ theme }) => theme.color.darkPurple};
+        border-radius: 0.6rem;
 
-      &:hover {
-        background-color: ${({ theme }) => theme.color.purple};
+        svg {
+          font-size: 1.8rem;
+        }
+
+        &:hover {
+          background-color: ${({ theme }) => theme.color.purple};
+        }
       }
     }
   }

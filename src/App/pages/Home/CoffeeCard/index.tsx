@@ -2,24 +2,12 @@ import { ShoppingCart } from "phosphor-react";
 
 import { StyledCoffeeCard } from "./styled";
 import { InputNumber } from "../../../components/InputNumber";
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { ICoffee } from "../../../context/Order/types";
+import { useOrder } from "../../../context/Order";
 
-export interface ICoffee {
-  id: string;
-  name: string;
-  imageUrl: string;
-  price: number;
-}
-
-type CoffeeTag =
-  | "Alcóolico"
-  | "Especial"
-  | "Gelado"
-  | "Tradicional"
-  | "Com Leite";
-export interface ICoffeeCard extends ICoffee {
-  description: string;
-  tags: CoffeeTag[];
+interface IFormData {
+  amount: number;
 }
 
 export function CoffeeCard({
@@ -29,8 +17,26 @@ export function CoffeeCard({
   imageUrl,
   price,
   tags,
-}: ICoffeeCard) {
-  const [amount, setAmount] = useState(1);
+}: ICoffee) {
+  const { addCartItem } = useOrder();
+  const { register, setValue, watch, handleSubmit } = useForm<IFormData>({
+    defaultValues: { amount: 1 },
+  });
+  const amount = watch("amount", 1);
+
+  function onSubmit({ amount }: IFormData) {
+    addCartItem({
+      amount,
+      coffee: {
+        id,
+        name,
+        description,
+        imageUrl,
+        price,
+        tags,
+      },
+    });
+  }
 
   return (
     <StyledCoffeeCard id={id}>
@@ -52,10 +58,16 @@ export function CoffeeCard({
             maximumFractionDigits: 2,
           }).format(price)}
         </h2>
-        <InputNumber value={amount} setAmount={setAmount} />
-        <button type="button">
-          <ShoppingCart weight="fill" />
-        </button>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <InputNumber
+            value={amount}
+            setAmount={(amount) => setValue("amount", amount)}
+            {...register("amount", { valueAsNumber: true })}
+          />
+          <button type="submit">
+            <ShoppingCart weight="fill" />
+          </button>
+        </form>
       </footer>
     </StyledCoffeeCard>
   );

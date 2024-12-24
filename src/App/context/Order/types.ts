@@ -72,6 +72,7 @@ export interface IOrderContext {
   setPaymentMethod: (method: PaymentMethodType) => void;
   cart?: ICartItem[];
   setCart: (cartItems: ICartItem[]) => void;
+  addCartItem: (cartItem: ICartItem) => void;
   totals?: ITotals;
   setTotals: (totals: ITotals) => void;
 }

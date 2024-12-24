@@ -171,6 +171,26 @@ export function OrderProvider({ children }: IOrderProvider) {
     });
   }, [cart]);
 
+  function addCartItem(cartItem: ICartItem) {
+    setCart((previousCart) => {
+      const cartItemExists = previousCart.find(
+        (previousCartItem) => previousCartItem.coffee.id === cartItem.coffee.id
+      );
+
+      if (cartItemExists) {
+        return previousCart.map((previousCartItem) =>
+          previousCartItem.coffee.id === cartItem.coffee.id
+            ? {
+                ...previousCartItem,
+                amount: previousCartItem.amount + cartItem.amount,
+              }
+            : previousCartItem
+        );
+      } else {
+        return [...previousCart, cartItem];
+      }
+    });
+  }
 
   return (
     <OrderContext.Provider
@@ -182,6 +202,7 @@ export function OrderProvider({ children }: IOrderProvider) {
         setPaymentMethod,
         cart,
         setCart,
+        addCartItem,
         totals,
         setTotals,
       }}
