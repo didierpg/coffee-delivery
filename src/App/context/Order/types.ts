@@ -73,6 +73,7 @@ export interface IOrderContext {
   cart?: ICartItem[];
   setCart: (cartItems: ICartItem[]) => void;
   addCartItem: (cartItem: ICartItem) => void;
+  removeCartItem: (id: string) => void;
   totals?: ITotals;
   setTotals: (totals: ITotals) => void;
 }

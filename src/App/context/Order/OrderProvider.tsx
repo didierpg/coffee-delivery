@@ -192,6 +192,14 @@ export function OrderProvider({ children }: IOrderProvider) {
     });
   }
 
+  function removeCartItem(id: string) {
+    const updatedCart = cart.filter(
+      (currentCartItem) => currentCartItem.coffee.id !== id
+    );
+
+    setCart(updatedCart);
+  }
+
   return (
     <OrderContext.Provider
       value={{
@@ -203,6 +211,7 @@ export function OrderProvider({ children }: IOrderProvider) {
         cart,
         setCart,
         addCartItem,
+        removeCartItem,
         totals,
         setTotals,
       }}

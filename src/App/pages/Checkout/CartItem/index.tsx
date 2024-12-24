@@ -3,26 +3,43 @@ import { StyledCoffeeItem } from "./styled";
 import { InputNumber } from "../../../components/InputNumber";
 import { ICartItem } from "../../../context/Order/types";
 import { useState } from "react";
+import { useOrder } from "../../../context/Order";
 
-export function CartItem({
-  coffee: { id, name, imageUrl, price },
-  amount: currentAmount,
-}: ICartItem) {
+export function CartItem({ coffee, amount: currentAmount }: ICartItem) {
   const [amount, setAmount] = useState(currentAmount);
   const total = new Intl.NumberFormat("pt-BR", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  }).format(price * amount);
+  }).format(coffee.price * amount);
+
+  const { addCartItem, removeCartItem } = useOrder();
+
+  const handleOnClick = () => {
+    if (confirm(`Deseja remover o café: ${coffee.name}`))
+      removeCartItem(coffee.id);
+  };
+
+  function handleSetAmount(value: number) {
+    const currentAmount = amount;
+    const newAmount = value;
+
+    addCartItem({
+      coffee,
+      amount: newAmount - currentAmount,
+    });
+
+    setAmount(value);
+  }
 
   return (
-    <StyledCoffeeItem id={id}>
+    <StyledCoffeeItem id={coffee.id}>
       <span>
-        <img src={imageUrl} />
+        <img src={coffee.imageUrl} />
         <span>
-          {name}
+          {coffee.name}
           <div className="actions">
-            <InputNumber value={amount} setAmount={setAmount} />
-            <button className="remove">
+            <InputNumber value={amount} setAmount={handleSetAmount} />
+            <button type="button" onClick={handleOnClick} className="remove">
               <Trash />
               <span>REMOVER</span>
             </button>
