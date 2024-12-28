@@ -1,12 +1,6 @@
 import { ReactNode, useEffect, useState } from "react";
 import { OrderContext } from "./OrderContext";
-import {
-  IAddress,
-  PaymentMethodType,
-  ITotals,
-  ICartItem,
-  ICoffee,
-} from "./types";
+import { ICartItem, ICoffee, IOrder } from "./types";
 
 export interface IOrderProvider {
   children: ReactNode;
@@ -133,18 +127,25 @@ export function OrderProvider({ children }: IOrderProvider) {
     },
   ];
 
-  const [address, setAddress] = useState<IAddress>();
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethodType>();
+  const [order, setOrder] = useState<IOrder>({
+    zip: "",
+    street: "",
+    number: "",
+    etc: "",
+    neighborhood: "",
+    city: "",
+    state: "AC",
+    payment: "credit",
+    total: {
+      sub: 0,
+      delivery: 0,
+      final: 0,
+    },
+  });
   const [cart, setCart] = useState<ICartItem[]>([]);
 
-  const [totals, setTotals] = useState<ITotals>({
-    subtotal: "0",
-    shipping: "0",
-    total: "0",
-  });
-
   useEffect(() => {
-    const subtotal =
+    const sub =
       cart?.reduce(
         (previousValue, currentValue) =>
           previousValue + currentValue.coffee.price * currentValue.amount,
@@ -153,21 +154,17 @@ export function OrderProvider({ children }: IOrderProvider) {
 
     const delivery = 10;
 
-    const total = subtotal + delivery;
+    const final = sub + delivery;
 
-    setTotals({
-      subtotal: new Intl.NumberFormat("pt-BR", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }).format(subtotal),
-      shipping: new Intl.NumberFormat("pt-BR", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }).format(delivery),
-      total: new Intl.NumberFormat("pt-BR", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }).format(total),
+    setOrder((currentOrder) => {
+      return {
+        ...currentOrder,
+        total: {
+          sub,
+          delivery,
+          final,
+        },
+      };
     });
   }, [cart]);
 
@@ -204,16 +201,12 @@ export function OrderProvider({ children }: IOrderProvider) {
     <OrderContext.Provider
       value={{
         coffees,
-        address,
-        setAddress,
-        paymentMethod,
-        setPaymentMethod,
+        order,
+        setOrder,
         cart,
         setCart,
         addCartItem,
         removeCartItem,
-        totals,
-        setTotals,
       }}
     >
       {children}

@@ -8,17 +8,22 @@ import {
 import { StyledCheckout } from "./styled";
 import { useTheme } from "styled-components";
 import { CartItem } from "./CartItem";
-import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useOrder } from "../../context/Order";
-import { ICartItem } from "../../context/Order/types";
+import {
+  ICartItem,
+  IOrder,
+  states,
+  paymentMethods,
+} from "../../context/Order/types";
+import { ErrorMessage } from "./components/ErrorMessage";
 
 export function Checkout() {
   const theme = useTheme();
 
-  const { cart, totals } = useOrder();
+  const { order, setOrder, cart } = useOrder();
 
   const addressSchema = z.object({
     zip: z
@@ -36,52 +41,33 @@ export function Checkout() {
     etc: z.string().optional(),
     neighborhood: z.string().min(1, "Bairro é obrigatório"),
     city: z.string().min(1, "Cidade é obrigatória"),
-    state: z.enum(
-      [
-        "AC",
-        "AL",
-        "AP",
-        "AM",
-        "BA",
-        "CE",
-        "DF",
-        "ES",
-        "GO",
-        "MA",
-        "MT",
-        "MS",
-        "MG",
-        "PA",
-        "PB",
-        "PR",
-        "PE",
-        "PI",
-        "RJ",
-        "RN",
-        "RS",
-        "RO",
-        "RR",
-        "SC",
-        "SP",
-        "SE",
-        "TO",
-      ],
-      {
-        required_error: "UF é obrigatório",
-        invalid_type_error: "Selecione um estado válido",
-      }
-    ),
+    state: z.enum(states, {
+      required_error: "UF is required",
+      invalid_type_error: "Please select a valid state",
+    }),
+    payment: z.enum(paymentMethods),
   });
 
   const {
     register,
     formState: { errors },
-  } = useForm({
+    handleSubmit,
+  } = useForm<IOrder>({
     resolver: zodResolver(addressSchema),
     mode: "all",
+    defaultValues: {
+      zip: "",
+      street: "",
+      number: "",
+      etc: "",
+      neighborhood: "",
+      city: "",
+      state: "AC",
+      payment: "credit",
+    },
   });
 
-  const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const formatZip = (event: React.ChangeEvent<HTMLInputElement>) => {
     let value = event.target.value.replace(/\D/g, ""); // Remove all non-numeric characters
     value = value.slice(0, 8); // Limit to 8 digits
     if (value.length > 5) {
@@ -90,143 +76,161 @@ export function Checkout() {
     event.target.value = value; // Update the input value
   };
 
+  function onSubmit(order: IOrder) {
+    setOrder(order);
+  }
+
+  const { sub = 0, delivery = 0, final = 0 } = order?.total || {};
+
+  const formattedSub = new Intl.NumberFormat("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(sub);
+  const formattedDelivery = new Intl.NumberFormat("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(delivery);
+  const formattedFinal = new Intl.NumberFormat("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(final);
+
   return (
     <StyledCheckout>
-      <section>
-        <h3>Complete seu pedido</h3>
-        <div>
-          <header>
-            <MapPinLine color={theme.color.darkYellow} />
-            <p>
-              Endereço de entrega
-              <small>Informe o endereço onde deseja receber seu pedido</small>
-            </p>
-          </header>
-          <div className="fields">
-            <div className="field">
-              <small>{errors.zip?.message?.toString()}</small>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <section>
+          <h3>Complete seu pedido</h3>
+          <div>
+            <header>
+              <MapPinLine color={theme.color.darkYellow} />
+              <p>
+                Endereço de entrega
+                <small>Informe o endereço onde deseja receber seu pedido</small>
+              </p>
+            </header>
+            <div className="fields">
+              <div className="field">
+                <ErrorMessage>{errors.zip?.message?.toString()}</ErrorMessage>
+                <input
+                  {...register("zip")}
+                  placeholder="CEP"
+                  onInput={formatZip}
+                />
+              </div>
+
+              <div className="field">
+                <ErrorMessage>
+                  {errors.street?.message?.toString()}
+                </ErrorMessage>
+                <input {...register("street")} placeholder="Rua" />
+              </div>
+
+              <div className="field">
+                <ErrorMessage>
+                  {errors.number?.message?.toString()}
+                </ErrorMessage>
+                <input {...register("number")} placeholder="Número" />
+              </div>
+              <div className="field">
+                <ErrorMessage>{errors.etc?.message?.toString()}</ErrorMessage>
+                <input {...register("etc")} placeholder="Complemento" />
+              </div>
+              <div className="field">
+                <ErrorMessage>
+                  {errors.neighborhood?.message?.toString()}
+                </ErrorMessage>
+                <input {...register("neighborhood")} placeholder="Bairro" />
+              </div>
+              <div className="field">
+                <ErrorMessage>{errors.city?.message?.toString()}</ErrorMessage>
+                <input {...register("city")} placeholder="Cidade" />
+              </div>
+              <div className="field">
+                <ErrorMessage>{errors.state?.message?.toString()}</ErrorMessage>
+                <select {...register("state")}>
+                  {states.map((state) => (
+                    <option key={state} value={state}>
+                      {state}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <header>
+              <CurrencyDollar color={theme.color.darkPurple} />
+              <p>
+                Pagamento
+                <small>
+                  O pagamento é feito na entrega. Escolha a forma que deseja
+                  pagar
+                </small>
+              </p>
+            </header>
+            <div className="payment-options">
+              <ErrorMessage>{errors.payment?.message?.toString()}</ErrorMessage>
               <input
-                {...register("zip")}
-                placeholder="CEP"
-                onInput={handleInput}
+                type="radio"
+                id="credit"
+                value="credit"
+                {...register("payment")}
               />
-            </div>
+              <label htmlFor="credit">
+                <CreditCard />
+                CARTÃO DE CRÉDITO
+              </label>
 
-            <div className="field">
-              <small>{errors.street?.message?.toString()}</small>
-              <input {...register("street")} placeholder="Rua" />
-            </div>
+              <input
+                type="radio"
+                id="debit"
+                value="debit"
+                {...register("payment")}
+              />
+              <label htmlFor="debit">
+                <Bank />
+                CARTÃO DE DÉBITO
+              </label>
 
-            <div className="field">
-              <small>{errors.number?.message?.toString()}</small>
-              <input {...register("number")} placeholder="Número" />
-            </div>
-            <div className="field">
-              <small>{errors.etc?.message?.toString()}</small>
-              <input {...register("etc")} placeholder="Complemento" />
-            </div>
-            <div className="field">
-              <small>{errors.neighborhood?.message?.toString()}</small>
-              <input {...register("neighborhood")} placeholder="Bairro" />
-            </div>
-            <div className="field">
-              <small>{errors.city?.message?.toString()}</small>
-              <input {...register("city")} placeholder="Cidade" />
-            </div>
-            <div className="field">
-              <small>{errors.state?.message?.toString()}</small>
-              <select {...register("state")}>
-                <option value="AC">AC</option>
-                <option value="AL">AL</option>
-                <option value="AP">AP</option>
-                <option value="AM">AM</option>
-                <option value="BA">BA</option>
-                <option value="CE">CE</option>
-                <option value="DF">DF</option>
-                <option value="ES">ES</option>
-                <option value="GO">GO</option>
-                <option value="MA">MA</option>
-                <option value="MT">MT</option>
-                <option value="MS">MS</option>
-                <option value="MG">MG</option>
-                <option value="PA">PA</option>
-                <option value="PB">PB</option>
-                <option value="PR">PR</option>
-                <option value="PE">PE</option>
-                <option value="PI">PI</option>
-                <option value="RJ">RJ</option>
-                <option value="RN">RN</option>
-                <option value="RS">RS</option>
-                <option value="RO">RO</option>
-                <option value="RR">RR</option>
-                <option value="SC">SC</option>
-                <option value="SP">SP</option>
-                <option value="SE">SE</option>
-                <option value="TO">TO</option>
-              </select>
+              <input
+                type="radio"
+                id="cash"
+                value="cash"
+                {...register("payment")}
+              />
+              <label htmlFor="cash">
+                <Money />
+                DINHEIRO
+              </label>
             </div>
           </div>
-        </div>
+        </section>
 
-        <div>
-          <header>
-            <CurrencyDollar color={theme.color.darkPurple} />
-            <p>
-              Pagamento
-              <small>
-                O pagamento é feito na entrega. Escolha a forma que deseja pagar
-              </small>
-            </p>
-          </header>
-          <div className="payment-options">
-            <input
-              type="radio"
-              name="payment"
-              id="credit"
-              value="credit-card"
-              required
-            />
-            <label htmlFor="credit">
-              <CreditCard />
-              CARTÃO DE CRÉDITO
-            </label>
-            <input type="radio" name="payment" id="debit" value="debit-card" />
-            <label htmlFor="debit">
-              <Bank />
-              CARTÃO DE DÉBITO
-            </label>
-            <input type="radio" name="payment" id="cash" value="cash" />
-            <label htmlFor="cash">
-              <Money />
-              DINHEIRO
-            </label>
+        <section>
+          <h3>Cafés selecionados</h3>
+          <div className="confirm">
+            {cart?.map((item: ICartItem) => (
+              <CartItem key={item.coffee.id} {...item} />
+            ))}
+            <div className="total">
+              <span>
+                <small>Total de itens</small>
+                R$ {formattedSub}
+              </span>
+              <span>
+                <small>Entrega</small>
+                R$ {formattedDelivery}
+              </span>
+              <span>
+                <b>Total</b>
+                <b>R$ {formattedFinal}</b>
+              </span>
+              <button type="submit">CONFIRMAR PEDIDO</button>
+            </div>
           </div>
-        </div>
-      </section>
-
-      <section>
-        <h3>Cafés selecionados</h3>
-        <div className="confirm">
-          {cart?.map((item: ICartItem) => (
-            <CartItem key={item.coffee.id} {...item} />
-          ))}
-          <div className="total">
-            <span>
-              <small>Total de itens</small>
-              R$ {totals?.subtotal}
-            </span>
-            <span>
-              <small>Entrega</small>
-              R$ {totals?.shipping}
-            </span>
-            <span>
-              <b>Total</b>
-              <b>R$ {totals?.total}</b>
-            </span>
-            <Link to="/success">CONFIRMAR PEDIDO</Link>
-          </div>
-        </div>
-      </section>
+        </section>
+      </form>
     </StyledCheckout>
   );
 }
