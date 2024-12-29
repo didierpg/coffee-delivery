@@ -84,7 +84,6 @@ export interface IOrderContext {
   order?: IOrder;
   setOrder: (order: IOrder) => void;
   cart?: ICartItem[];
-  setCart: (cartItems: ICartItem[]) => void;
   addCartItem: (cartItem: ICartItem) => void;
   removeCartItem: (id: string) => void;
 }

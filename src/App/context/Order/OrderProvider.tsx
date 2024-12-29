@@ -1,11 +1,10 @@
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useReducer, useState } from "react";
 import { OrderContext } from "./OrderContext";
 import { ICartItem, ICoffee, IOrder, paymentMethods, states } from "./types";
 
 export interface IOrderProvider {
   children: ReactNode;
 }
-
 export function OrderProvider({ children }: IOrderProvider) {
   const coffees: ICoffee[] = [
     {
@@ -127,6 +126,50 @@ export function OrderProvider({ children }: IOrderProvider) {
     },
   ];
 
+  type CartActionType =
+    | { type: "ADD_CART_ITEM"; payload: ICartItem }
+    | { type: "REMOVE_CART_ITEM"; payload: { id: string } };
+
+  const cartInitialState = (): ICartItem[] => {
+    const storedCartItems = localStorage.getItem("cart");
+    return storedCartItems ? JSON.parse(storedCartItems) : [];
+  };
+
+  const [cart, dispatch] = useReducer(
+    (cart: ICartItem[], { type, payload }: CartActionType): ICartItem[] => {
+      switch (type) {
+        case "ADD_CART_ITEM": {
+          const cartItem = payload;
+          const isCartItemAlreadyAdded = cart.find(
+            (previousCartItem) =>
+              previousCartItem.coffee.id === cartItem.coffee.id
+          );
+
+          if (isCartItemAlreadyAdded) {
+            return cart.map((previousCartItem) =>
+              previousCartItem.coffee.id === cartItem.coffee.id
+                ? {
+                    ...previousCartItem,
+                    amount: previousCartItem.amount + cartItem.amount,
+                  }
+                : previousCartItem
+            );
+          } else {
+            return [...cart, cartItem];
+          }
+        }
+        case "REMOVE_CART_ITEM": {
+          return [
+            ...cart.filter((cartItem) => cartItem.coffee.id !== payload.id),
+          ];
+        }
+        default:
+          return [...cart];
+      }
+    },
+    cartInitialState()
+  );
+
   const initialOrder = () => {
     const storedOrderValues = localStorage.getItem("order");
     return storedOrderValues
@@ -148,13 +191,7 @@ export function OrderProvider({ children }: IOrderProvider) {
         };
   };
 
-  const initialCart = () => {
-    const storedCartItems = localStorage.getItem("cart");
-    return storedCartItems ? JSON.parse(storedCartItems) : [];
-  };
-
   const [order, setOrder] = useState<IOrder>(initialOrder);
-  const [cart, setCart] = useState<ICartItem[]>(initialCart);
 
   useEffect(() => {
     const sub =
@@ -189,32 +226,11 @@ export function OrderProvider({ children }: IOrderProvider) {
   }, [cart]);
 
   function addCartItem(cartItem: ICartItem) {
-    setCart((previousCart) => {
-      const cartItemExists = previousCart.find(
-        (previousCartItem) => previousCartItem.coffee.id === cartItem.coffee.id
-      );
-
-      if (cartItemExists) {
-        return previousCart.map((previousCartItem) =>
-          previousCartItem.coffee.id === cartItem.coffee.id
-            ? {
-                ...previousCartItem,
-                amount: previousCartItem.amount + cartItem.amount,
-              }
-            : previousCartItem
-        );
-      } else {
-        return [...previousCart, cartItem];
-      }
-    });
+    dispatch({ type: "ADD_CART_ITEM", payload: cartItem });
   }
 
   function removeCartItem(id: string) {
-    const updatedCart = cart.filter(
-      (currentCartItem) => currentCartItem.coffee.id !== id
-    );
-
-    setCart(updatedCart);
+    dispatch({ type: "REMOVE_CART_ITEM", payload: { id } });
   }
 
   return (
@@ -224,7 +240,6 @@ export function OrderProvider({ children }: IOrderProvider) {
         order,
         setOrder,
         cart,
-        setCart,
         addCartItem,
         removeCartItem,
       }}
