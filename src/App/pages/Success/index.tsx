@@ -1,7 +1,10 @@
 import { StyledSuccess } from "./styled";
 import DeliveringImage from "../../../assets/delivering.svg";
 import { CurrencyDollar, MapPin, Timer } from "phosphor-react";
+import { useLocation } from "react-router-dom";
 export function Success() {
+  const { state: order } = useLocation();
+
   return (
     <StyledSuccess>
       <h1>Uhu! Pedido confirmado</h1>
@@ -11,9 +14,12 @@ export function Success() {
           <span>
             <MapPin weight="fill" />
             <p>
-              Entrega em <b>Rua João Daniel Martinelli, 102</b>
+              Entrega em{" "}
+              <b>
+                {order?.street}, {order?.number}
+              </b>
               <br />
-              Farrapos - Porto Alegre, RS
+              {order?.neighborhood} - {order?.city}, {order?.state}
             </p>
           </span>
           <span>
@@ -29,7 +35,7 @@ export function Success() {
             <p>
               Pagamento na entrega
               <br />
-              <b>Cartão de Crédito</b>
+              <b>{order?.payment}</b>
             </p>
           </span>
         </div>

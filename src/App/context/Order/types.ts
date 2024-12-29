@@ -54,7 +54,11 @@ export interface IAddress {
   state: StateType;
 }
 
-export const paymentMethods = ["debit", "credit", "cash"] as const;
+export const paymentMethods = [
+  "Cartão de Débito",
+  "Cartão de Crédito",
+  "Dinheiro",
+] as const;
 
 export type PaymentMethodType = (typeof paymentMethods)[number];
 

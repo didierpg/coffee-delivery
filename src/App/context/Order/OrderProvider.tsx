@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from "react";
 import { OrderContext } from "./OrderContext";
-import { ICartItem, ICoffee, IOrder } from "./types";
+import { ICartItem, ICoffee, IOrder, paymentMethods, states } from "./types";
 
 export interface IOrderProvider {
   children: ReactNode;
@@ -134,8 +134,8 @@ export function OrderProvider({ children }: IOrderProvider) {
     etc: "",
     neighborhood: "",
     city: "",
-    state: "AC",
-    payment: "credit",
+    state: states[0],
+    payment: paymentMethods[0],
     total: {
       sub: 0,
       delivery: 0,

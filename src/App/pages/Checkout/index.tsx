@@ -19,11 +19,12 @@ import {
   paymentMethods,
 } from "../../context/Order/types";
 import { ErrorMessage } from "./components/ErrorMessage";
+import { useNavigate } from "react-router-dom";
 
 export function Checkout() {
   const theme = useTheme();
-
-  const { order, setOrder, cart } = useOrder();
+  const navigate = useNavigate();
+  const { order, cart } = useOrder();
 
   const addressSchema = z.object({
     zip: z
@@ -55,16 +56,7 @@ export function Checkout() {
   } = useForm<IOrder>({
     resolver: zodResolver(addressSchema),
     mode: "all",
-    defaultValues: {
-      zip: "",
-      street: "",
-      number: "",
-      etc: "",
-      neighborhood: "",
-      city: "",
-      state: "AC",
-      payment: "credit",
-    },
+    defaultValues: { ...order },
   });
 
   const formatZip = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,7 +69,7 @@ export function Checkout() {
   };
 
   function onSubmit(order: IOrder) {
-    setOrder(order);
+    navigate("/success", { state: order });
   }
 
   const { sub = 0, delivery = 0, final = 0 } = order?.total || {};
@@ -174,7 +166,7 @@ export function Checkout() {
               <input
                 type="radio"
                 id="credit"
-                value="credit"
+                value={paymentMethods[0]}
                 {...register("payment")}
               />
               <label htmlFor="credit">
@@ -185,7 +177,7 @@ export function Checkout() {
               <input
                 type="radio"
                 id="debit"
-                value="debit"
+                value={paymentMethods[1]}
                 {...register("payment")}
               />
               <label htmlFor="debit">
@@ -196,7 +188,7 @@ export function Checkout() {
               <input
                 type="radio"
                 id="cash"
-                value="cash"
+                value={paymentMethods[2]}
                 {...register("payment")}
               />
               <label htmlFor="cash">
