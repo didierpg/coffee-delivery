@@ -127,22 +127,34 @@ export function OrderProvider({ children }: IOrderProvider) {
     },
   ];
 
-  const [order, setOrder] = useState<IOrder>({
-    zip: "",
-    street: "",
-    number: "",
-    etc: "",
-    neighborhood: "",
-    city: "",
-    state: states[0],
-    payment: paymentMethods[0],
-    total: {
-      sub: 0,
-      delivery: 0,
-      final: 0,
-    },
-  });
-  const [cart, setCart] = useState<ICartItem[]>([]);
+  const initialOrder = () => {
+    const storedOrderValues = localStorage.getItem("order");
+    return storedOrderValues
+      ? JSON.parse(storedOrderValues)
+      : {
+          zip: "",
+          street: "",
+          number: "",
+          etc: "",
+          neighborhood: "",
+          city: "",
+          state: states[0],
+          payment: paymentMethods[0],
+          total: {
+            sub: 0,
+            delivery: 0,
+            final: 0,
+          },
+        };
+  };
+
+  const initialCart = () => {
+    const storedCartItems = localStorage.getItem("cart");
+    return storedCartItems ? JSON.parse(storedCartItems) : [];
+  };
+
+  const [order, setOrder] = useState<IOrder>(initialOrder);
+  const [cart, setCart] = useState<ICartItem[]>(initialCart);
 
   useEffect(() => {
     const sub =
@@ -166,6 +178,14 @@ export function OrderProvider({ children }: IOrderProvider) {
         },
       };
     });
+  }, [cart]);
+
+  useEffect(() => {
+    localStorage.setItem("order", JSON.stringify(order));
+  }, [order]);
+
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
   function addCartItem(cartItem: ICartItem) {
