@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useReducer, useState } from "react";
+import { ReactNode, useEffect, useReducer } from "react";
 import { OrderContext } from "./OrderContext";
 import { ICartItem, ICoffee, IOrder, paymentMethods, states } from "./types";
 
@@ -126,6 +126,10 @@ export function OrderProvider({ children }: IOrderProvider) {
     },
   ];
 
+  type OrderActionType =
+    | { type: "SET_ORDER"; payload: IOrder }
+    | { type: "UPDATE_TOTAL"; payload: undefined };
+
   type CartActionType =
     | { type: "ADD_CART_ITEM"; payload: ICartItem }
     | { type: "REMOVE_CART_ITEM"; payload: { id: string } };
@@ -135,7 +139,28 @@ export function OrderProvider({ children }: IOrderProvider) {
     return storedCartItems ? JSON.parse(storedCartItems) : [];
   };
 
-  const [cart, dispatch] = useReducer(
+  const orderInitialState = (): IOrder => {
+    const storedOrder = localStorage.getItem("order");
+    return storedOrder
+      ? JSON.parse(storedOrder)
+      : {
+          zip: "",
+          street: "",
+          number: "",
+          etc: "",
+          neighborhood: "",
+          city: "",
+          state: states[0],
+          payment: paymentMethods[0],
+          total: {
+            sub: 0,
+            delivery: 0,
+            final: 0,
+          },
+        };
+  };
+
+  const [cart, cartDispatch] = useReducer(
     (cart: ICartItem[], { type, payload }: CartActionType): ICartItem[] => {
       switch (type) {
         case "ADD_CART_ITEM": {
@@ -170,51 +195,42 @@ export function OrderProvider({ children }: IOrderProvider) {
     cartInitialState()
   );
 
-  const initialOrder = () => {
-    const storedOrderValues = localStorage.getItem("order");
-    return storedOrderValues
-      ? JSON.parse(storedOrderValues)
-      : {
-          zip: "",
-          street: "",
-          number: "",
-          etc: "",
-          neighborhood: "",
-          city: "",
-          state: states[0],
-          payment: paymentMethods[0],
-          total: {
-            sub: 0,
-            delivery: 0,
-            final: 0,
-          },
-        };
-  };
+  const [order, orderDispatch] = useReducer(
+    (order: IOrder, { type, payload }: OrderActionType): IOrder => {
+      switch (type) {
+        case "SET_ORDER": {
+          return { ...payload };
+        }
+        case "UPDATE_TOTAL": {
+          const sub =
+            cart?.reduce(
+              (previousValue, currentValue) =>
+                previousValue + currentValue.coffee.price * currentValue.amount,
+              0
+            ) || 0;
 
-  const [order, setOrder] = useState<IOrder>(initialOrder);
+          const delivery = 10;
+
+          const final = sub + delivery;
+
+          return {
+            ...order,
+            total: {
+              sub,
+              delivery,
+              final,
+            },
+          };
+        }
+        default:
+          return { ...order };
+      }
+    },
+    orderInitialState()
+  );
 
   useEffect(() => {
-    const sub =
-      cart?.reduce(
-        (previousValue, currentValue) =>
-          previousValue + currentValue.coffee.price * currentValue.amount,
-        0
-      ) || 0;
-
-    const delivery = 10;
-
-    const final = sub + delivery;
-
-    setOrder((currentOrder) => {
-      return {
-        ...currentOrder,
-        total: {
-          sub,
-          delivery,
-          final,
-        },
-      };
-    });
+    orderDispatch({ type: "UPDATE_TOTAL", payload: undefined });
   }, [cart]);
 
   useEffect(() => {
@@ -226,11 +242,15 @@ export function OrderProvider({ children }: IOrderProvider) {
   }, [cart]);
 
   function addCartItem(cartItem: ICartItem) {
-    dispatch({ type: "ADD_CART_ITEM", payload: cartItem });
+    cartDispatch({ type: "ADD_CART_ITEM", payload: cartItem });
   }
 
   function removeCartItem(id: string) {
-    dispatch({ type: "REMOVE_CART_ITEM", payload: { id } });
+    cartDispatch({ type: "REMOVE_CART_ITEM", payload: { id } });
+  }
+
+  function setOrder(order: IOrder) {
+    orderDispatch({ type: "SET_ORDER", payload: order });
   }
 
   return (
