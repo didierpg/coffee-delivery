@@ -2,11 +2,18 @@ import styled from "styled-components";
 
 export const StyledCheckout = styled.main`
   form {
+    // border: 1px solid red;
+    width: 100%;
     display: grid;
-    grid-template-columns: 0.7fr 0.5fr;
     gap: 3.2rem;
+    grid-template-columns: 1fr;
+
+    @media (min-width: 769px) {
+      grid-template-columns: 0.7fr 0.5fr;
+    }
 
     section {
+      // border: 1px solid orange;
       display: flex;
       flex-direction: column;
       gap: 1.2rem;
@@ -15,7 +22,19 @@ export const StyledCheckout = styled.main`
         font-size: 1.8rem;
       }
 
-      > div {
+      div.delivery,
+      div.payment,
+      div.confirm {
+        // border: 1px solid gold;
+
+        > div {
+          // border: 1px solid cyan;
+
+          > * {
+            // border: 1px solid purple;
+          }
+        }
+
         padding: 4rem;
         background-color: ${({ theme }) => theme.color.baseCard};
 
@@ -24,6 +43,8 @@ export const StyledCheckout = styled.main`
         }
 
         header {
+          // border: 1px solid lime;
+
           display: flex;
           gap: 0.8rem;
           align-items: start;
@@ -35,48 +56,86 @@ export const StyledCheckout = styled.main`
             }
           }
         }
+      }
 
-        .fields {
+      div.delivery {
+        max-width: fit-content;
+
+        div.fields {
           display: grid;
           grid-template-columns: repeat(12, 1fr);
           gap: 1.2rem;
 
           .field {
             position: relative;
-
             &:nth-child(1) {
               grid-column: span 4;
+
+              @media (max-width: 768px) {
+                grid-column: span 12;
+              }
             }
+
             &:nth-child(2) {
               grid-column: span 12;
+
+              @media (max-width: 768px) {
+                grid-column: span 12;
+              }
             }
 
             &:nth-child(3) {
               grid-column: span 4;
+
+              @media (max-width: 768px) {
+                grid-column: span 12;
+              }
             }
 
             &:nth-child(4) {
               grid-column: span 8;
+
+              @media (max-width: 768px) {
+                grid-column: span 12;
+              }
             }
 
             &:nth-child(5) {
               grid-column: span 4;
+
+              @media (max-width: 768px) {
+                grid-column: span 12;
+              }
             }
 
             &:nth-child(6) {
               grid-column: span 6;
+
+              @media (max-width: 768px) {
+                grid-column: span 12;
+              }
             }
 
             &:nth-child(7) {
               grid-column: span 2;
+
+              @media (max-width: 768px) {
+                grid-column: span 12;
+              }
             }
           }
         }
+      }
 
-        .payment-options {
+      div.payment {
+        div.payment-options {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
           gap: 1.2rem;
+
+          @media (max-width: 768px) {
+            grid-template-columns: 1fr;
+          }
 
           input {
             display: none;
@@ -95,6 +154,7 @@ export const StyledCheckout = styled.main`
             display: flex;
             gap: 0.5rem;
             align-items: center;
+            justify-content: center;
 
             background-color: ${({ theme }) => theme.color.baseButton};
             padding: 1.6rem 2rem;
@@ -110,10 +170,10 @@ export const StyledCheckout = styled.main`
         }
       }
 
-      .confirm {
+      div.confirm {
         border-radius: 0 6.4rem 0 6.4rem;
 
-        .total {
+        div.total {
           display: flex;
           flex-direction: column;
           gap: 1.2rem;

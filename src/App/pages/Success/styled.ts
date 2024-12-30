@@ -11,6 +11,10 @@ export const StyledSuccess = styled.main`
     justify-content: space-between;
     gap: 10rem;
 
+    @media (max-width: 400px) {
+      flex-direction: column;
+    }
+
     div:first-child {
       display: flex;
       flex: 1;

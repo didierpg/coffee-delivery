@@ -133,5 +133,9 @@ export const GlobalStyle = createGlobalStyle`
     opacity: .2;
 
   }
-
+  @media (max-width: 400px) {
+    main * {
+      max-width: 300px;
+    }
+  }
 `;

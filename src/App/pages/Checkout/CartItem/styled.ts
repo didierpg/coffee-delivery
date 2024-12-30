@@ -3,8 +3,8 @@ import styled from "styled-components";
 export const StyledCoffeeItem = styled.div`
   > span {
     display: flex;
-    align-items: start;
     gap: 2rem;
+    justify-content: center;
 
     img {
       width: 6.4rem;

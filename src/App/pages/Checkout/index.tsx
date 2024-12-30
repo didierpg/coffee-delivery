@@ -92,7 +92,7 @@ export function Checkout() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <section>
           <h3>Complete seu pedido</h3>
-          <div>
+          <div className="delivery">
             <header>
               <MapPinLine color={theme.color.darkYellow} />
               <p>
@@ -150,7 +150,7 @@ export function Checkout() {
             </div>
           </div>
 
-          <div>
+          <div className="payment">
             <header>
               <CurrencyDollar color={theme.color.darkPurple} />
               <p>

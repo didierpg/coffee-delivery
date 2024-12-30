@@ -1,7 +1,7 @@
 import { Link, NavLink } from "react-router-dom";
 import LogoImage from "../../../assets/logo.svg";
 import { StyledHeader } from "./styled";
-import { MapPin, ShoppingCart } from "phosphor-react";
+import { ShoppingCart } from "phosphor-react";
 import { useOrder } from "../../context/Order";
 
 export function Header() {
@@ -22,11 +22,7 @@ export function Header() {
           </div>
         </Link>
       </div>
-      <div className="actions">
-        <span>
-          <MapPin size={32} weight="fill" />
-          <span>Porto Alegre, RS</span>
-        </span>
+      <div className="checkout">
         <NavLink to="/checkout">
           <ShoppingCart weight="fill" />
           {!!totalItemsCount && <b>{totalItemsCount}</b>}
