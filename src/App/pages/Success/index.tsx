@@ -1,5 +1,5 @@
 import { StyledSuccess } from "./styled";
-import DeliveringImage from "../../../assets/delivering.svg";
+import DeliveringImage from "/assets/delivering.svg";
 import { CurrencyDollar, MapPin, Timer } from "phosphor-react";
 import { useLocation } from "react-router-dom";
 export function Success() {

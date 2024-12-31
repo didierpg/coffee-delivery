@@ -1,6 +1,6 @@
 import { Coffee, Package, ShoppingCart, Timer } from "phosphor-react";
 import { StyledHome } from "./styled";
-import CoffeeImage from "../../../assets/coffee.svg";
+import CoffeeImage from "/assets/coffee.svg";
 import { CoffeeCard } from "./CoffeeCard";
 import { useOrder } from "../../context/Order/context";
 
