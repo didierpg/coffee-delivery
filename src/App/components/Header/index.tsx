@@ -2,10 +2,12 @@ import { Link, NavLink } from "react-router-dom";
 import LogoImage from "../../../assets/logo.svg";
 import { StyledHeader } from "./styled";
 import { ShoppingCart } from "phosphor-react";
-import { useOrder } from "../../context/Order";
+import { useOrder } from "../../context/Order/context";
 
 export function Header() {
-  const { cart } = useOrder();
+  const {
+    state: { cart },
+  } = useOrder();
 
   const totalItemsCount = cart?.reduce(
     (previousValue, currentValue) => previousValue + currentValue.amount,
@@ -23,7 +25,7 @@ export function Header() {
         </Link>
       </div>
       <div className="checkout">
-        <NavLink to="/checkout">
+        <NavLink to={totalItemsCount ? "/checkout" : "#"}>
           <ShoppingCart weight="fill" />
           {!!totalItemsCount && <b>{totalItemsCount}</b>}
         </NavLink>

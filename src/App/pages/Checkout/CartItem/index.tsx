@@ -3,7 +3,7 @@ import { StyledCoffeeItem } from "./styled";
 import { InputNumber } from "../../../components/InputNumber";
 import { ICartItem } from "../../../context/Order/types";
 import { useState } from "react";
-import { useOrder } from "../../../context/Order";
+import { addCartItem, removeCartItem, useOrder } from "../../../context/Order";
 
 export function CartItem({ coffee, amount: currentAmount }: ICartItem) {
   const [amount, setAmount] = useState(currentAmount);
@@ -12,21 +12,23 @@ export function CartItem({ coffee, amount: currentAmount }: ICartItem) {
     maximumFractionDigits: 2,
   }).format(coffee.price * amount);
 
-  const { addCartItem, removeCartItem } = useOrder();
+  const { dispatch } = useOrder();
 
   const handleOnClick = () => {
     if (confirm(`Deseja remover o café: ${coffee.name}`))
-      removeCartItem(coffee.id);
+      dispatch(removeCartItem(coffee.id));
   };
 
   function handleSetAmount(value: number) {
     const currentAmount = amount;
     const newAmount = value;
 
-    addCartItem({
-      coffee,
-      amount: newAmount - currentAmount,
-    });
+    dispatch(
+      addCartItem({
+        coffee,
+        amount: newAmount - currentAmount,
+      })
+    );
 
     setAmount(value);
   }

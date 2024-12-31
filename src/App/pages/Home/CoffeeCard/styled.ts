@@ -77,7 +77,7 @@ export const StyledCoffeeCard = styled.div`
     form {
       display: inherit;
       gap: inherit;
-
+      position: relative;
       button[type="submit"] {
         padding: 0.8rem;
         color: ${({ theme }) => theme.color.baseCard};

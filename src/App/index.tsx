@@ -3,7 +3,7 @@ import { Header } from "./components/Header";
 import { Home } from "./pages/Home";
 import { Checkout } from "./pages/Checkout";
 import { Success } from "./pages/Success";
-import { OrderProvider } from "./context/Order/OrderProvider";
+import { OrderProvider } from "./context/Order/Provider";
 
 export function App() {
   return (

@@ -11,7 +11,7 @@ import { CartItem } from "./CartItem";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useOrder } from "../../context/Order";
+import { useOrder } from "../../context/Order/context";
 import {
   ICartItem,
   IOrder,
@@ -24,7 +24,7 @@ import { useNavigate } from "react-router-dom";
 export function Checkout() {
   const theme = useTheme();
   const navigate = useNavigate();
-  const { order, cart } = useOrder();
+  const { state: order } = useOrder();
 
   const addressSchema = z.object({
     zip: z
@@ -202,7 +202,7 @@ export function Checkout() {
         <section>
           <h3>Cafés selecionados</h3>
           <div className="confirm">
-            {cart?.map((item: ICartItem) => (
+            {order.cart.map((item: ICartItem) => (
               <CartItem key={item.coffee.id} {...item} />
             ))}
             <div className="total">

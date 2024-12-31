@@ -44,6 +44,7 @@ export const states = [
 ] as const;
 
 export type StateType = (typeof states)[number];
+
 export interface IAddress {
   zip: string;
   street: string;
@@ -77,13 +78,16 @@ export interface ITotal {
 export interface IOrder extends IAddress {
   payment: PaymentMethodType;
   total: ITotal;
+  cart: ICartItem[];
 }
+
+export type OrderActionType =
+  | { type: "UPDATE_TOTAL"; payload: ICartItem[] }
+  | { type: "ADD_CART_ITEM"; payload: ICartItem }
+  | { type: "REMOVE_CART_ITEM"; payload: { id: string } };
 
 export interface IOrderContext {
   coffees: ICoffee[];
-  order?: IOrder;
-  setOrder: (order: IOrder) => void;
-  cart?: ICartItem[];
-  addCartItem: (cartItem: ICartItem) => void;
-  removeCartItem: (id: string) => void;
+  state: IOrder;
+  dispatch: (action: OrderActionType) => void;
 }

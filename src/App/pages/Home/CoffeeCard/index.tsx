@@ -4,7 +4,9 @@ import { StyledCoffeeCard } from "./styled";
 import { InputNumber } from "../../../components/InputNumber";
 import { useForm } from "react-hook-form";
 import { ICoffee } from "../../../context/Order/types";
-import { useOrder } from "../../../context/Order";
+import { addCartItem, useOrder } from "../../../context/Order";
+import { useState } from "react";
+import { FloatingMessage } from "../../../components/FloatingMessage";
 
 interface IFormData {
   amount: number;
@@ -18,24 +20,28 @@ export function CoffeeCard({
   price,
   tags,
 }: ICoffee) {
-  const { addCartItem } = useOrder();
+  const { dispatch } = useOrder();
   const { register, setValue, watch, handleSubmit } = useForm<IFormData>({
     defaultValues: { amount: 1 },
   });
   const amount = watch("amount", 1);
+  const [floatingMessages, setFloatingMessages] = useState<string[]>([]);
 
   function onSubmit({ amount }: IFormData) {
-    addCartItem({
-      amount,
-      coffee: {
-        id,
-        name,
-        description,
-        imageUrl,
-        price,
-        tags,
-      },
-    });
+    dispatch(
+      addCartItem({
+        amount,
+        coffee: {
+          id,
+          name,
+          description,
+          imageUrl,
+          price,
+          tags,
+        },
+      })
+    );
+    setFloatingMessages((prev) => [...prev, `+${amount}`]);
   }
 
   return (
@@ -64,9 +70,20 @@ export function CoffeeCard({
             setAmount={(amount) => setValue("amount", amount)}
             {...register("amount", { valueAsNumber: true })}
           />
-          <button type="submit">
+          <button type="submit" aria-label={`Add ${name} to cart`}>
             <ShoppingCart weight="fill" />
           </button>
+          {floatingMessages.map((message, index) => (
+            <FloatingMessage
+              key={index}
+              message={message}
+              onAnimationEnd={() =>
+                setFloatingMessages((prev) =>
+                  prev.filter((_, i) => i !== index)
+                )
+              }
+            />
+          ))}
         </form>
       </footer>
     </StyledCoffeeCard>
